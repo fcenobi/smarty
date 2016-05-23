@@ -271,10 +271,13 @@ class Smarty_Security
      */
     public function isTrustedPhpFunction($function_name, $compiler)
     {
-        if (isset($this->php_functions) &&
-            (empty($this->php_functions) || in_array($function_name, $this->php_functions))
-        ) {
-            return true;
+        if (isset($this->php_functions)) {
+            if (empty($this->php_functions)) {
+                return true;
+            } else {
+                $php_functions = array_map('strtolower', $this->php_functions);
+                return in_array(strtolower($function_name), $php_functions);
+            }
         }
 
         $compiler->trigger_template_error("PHP function '{$function_name}' not allowed by security setting");
